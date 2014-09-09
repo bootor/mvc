@@ -13,6 +13,9 @@ class Route_CommandDispatcher
         function Dispatch()
                 {
 				$controller = new PhonebookController;
+				// todo: $action = $this->command->getCommandName();
+				// if (method_exists($controller,$action) { $controller->$action(); }
+				// see: http://php.net/manual/ru/function.method-exists.php
 				switch ($this->command->getCommandName())
                         {
                         case 'delete' : 
