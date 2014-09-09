@@ -23,6 +23,7 @@ public function add($command) {
 			} else {
 				$url = dirname($_SERVER['SCRIPT_NAME']); 
 				$url .= '/add/'.$element['name'].'/'.$element['phone'];
+				// you can save element here. no need to create additional rediredt
 				Header("Location: $url");
 				exit();
 			}
@@ -58,6 +59,7 @@ public function search($command) {
 	$searchbook = $mybook->get_searched_data($sort, $direction);
 	include "searchform.html";
 	//echo "<hr><h3>Last search results</h3>";
+	// todo: move all html codo to view files
 	echo "<hr>";
 	include "searchsortlinks.html";
 	echo "<table>";
