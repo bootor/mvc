@@ -5,6 +5,7 @@ public function add($command) {
 	global $commandResult, $mybook;
 	$this->command = $command;
 	include "uplinks.html";
+	$emptyfields = false;
 	if (sizeof($this->command->getParameters()) >= 2) {
 		$parameters = $this->command->getParameters();
 		$element['name'] = $parameters[0];
@@ -18,18 +19,21 @@ public function add($command) {
 			$element = $_REQUEST['element'];
 			if (ini_get("magic_quotes_gpc"))
 				$element = array_map('stripslashes', $element);
-			if (($element['name'] == "") AND ($element['phone'] == "")) {
+			if (($element['name'] == "") OR ($element['phone'] == "")) {
 				$emptyfields = true;
 			} else {
 				$url = dirname($_SERVER['SCRIPT_NAME']); 
-				$url .= '/add/'.$element['name'].'/'.$element['phone'];
+				//$url .= '/add/'.$element['name'].'/'.$element['phone'];
 				// you can save element here. no need to create additional rediredt
+				$mybook->add_to_db($element);
 				Header("Location: $url");
 				exit();
 			}
 		}
 	}
 	include "addform.html";
+	if ($emptyfields == true)
+		include "addemptyfields.html";
 	}
 
 public function search($command) {
@@ -39,22 +43,24 @@ public function search($command) {
 	$searchbook = array();
 	$sort = "name";
 	$direction = 'up';
-	$emptyfields = false;
+	$emptyfields = true;
 	include "uplinks.html";
 	$element['name'] = '';
 	$element['phone'] = '';
 	if (sizeof($this->command->getParameters()) > 1) {
 		$parameters = $this->command->getParameters();
-		$element['name'] = $parameters[0];
-		$element['phone'] = $parameters[1];
-		if ($element['name'] != '' OR $element['phone'] != '')
-			$mybook->get_search_data($element);
-	} else {
-		$emptyfields = true;
+		$parameters[0] == 'phone' ? $sort = 'phone' : $sort = 'name';
+		$parameters[1] == 'down' ? $direction = 'down' : $direction = 'up';
 	}
-	if (sizeof($this->command->getParameters()) > 3) {
-		$sort = $parameters[2];
-		$direction = $parameters[3];
+	if (sizeof($this->command->getParameters()) > 2) {
+		$element['name'] = $parameters[2];
+		if (sizeof($this->command->getParameters()) > 3)
+			$element['phone'] = $parameters[3];
+		if ($element['name'] != '' OR $element['phone'] != '') {
+			$emptyfields = false;
+			$flag = 1;
+			$mybook->get_search_data($element);
+		}
 	}
 	$searchbook = $mybook->get_searched_data($sort, $direction);
 	include "searchform.html";
@@ -69,14 +75,13 @@ public function search($command) {
 	echo "</table><hr>";
 	
 	if (count($searchbook) === 0 AND $flag === 1) echo "No match founded...<br><hr>";
-	//if ($emptyfields == true) echo "<hr>Incorrect request. Search is impossible.<hr>";
 	
 	if (@$_REQUEST['doSearch']) {
 		$element = $_REQUEST['element'];
 		if (ini_get("magic_quotes_gpc"))
 			$element = array_map('stripslashes', $element);
 		if (($element['name'] == "") AND ($element['phone'] == "")) {
-			$emptyfields = true;
+			echo "<hr>Empty fields. Search is impossible.<hr>";
 		} else {
 			$url = dirname($_SERVER['SCRIPT_NAME']); 
 			$url .= '/search/'.$element['name'].'/'.$element['phone'];
@@ -119,6 +124,7 @@ public function index($command) {
 	}
 	echo "</table><hr>";
 	}
+
 public function tosort($command) {
 	global $commandResult, $mybook;
 	$this->command = $command;

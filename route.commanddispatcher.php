@@ -13,9 +13,13 @@ class Route_CommandDispatcher
         function Dispatch()
                 {
 				$controller = new PhonebookController;
-				// todo: $action = $this->command->getCommandName();
-				// if (method_exists($controller,$action) { $controller->$action(); }
+				$action = $this->command->getCommandName();
+				if (method_exists($controller, $action))
+					$controller->$action($this->command);
+				else 
+					$controller->index($this->command);
 				// see: http://php.net/manual/ru/function.method-exists.php
+				/*
 				switch ($this->command->getCommandName())
                         {
                         case 'delete' : 
@@ -37,6 +41,7 @@ class Route_CommandDispatcher
                                 $controller->index($this->command);
                                 break;
                         }
+				*/
                 }
         }
 ?>
