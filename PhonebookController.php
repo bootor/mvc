@@ -1,6 +1,12 @@
 <?php
 class PhonebookController {
 	
+	/**
+	 * Create new entity in db
+	 * 
+	 * @param Route_Command $command
+	 * 
+	 */
 	public function add($command) {
 		global $commandResult, $mybook;
 		$this->command = $command;
@@ -61,6 +67,7 @@ class PhonebookController {
 			}
 		}
 		$searchbook = $mybook->get_searched_data($sort, $direction);
+		// todo: you can call include from view file. so one view file can include some sub-view files.
 		include "searchform.html";
 		echo "<hr>";
 		include "searchsortlinks.html";
@@ -112,6 +119,7 @@ class PhonebookController {
 		$book = $mybook->get_sorted_data($sort, 'up');
 		include "uplinks.html";
 		include "sortlinks.html";
+		//todo: same here
 		echo "<table>";
 		foreach($book as $element) {
 			echo "<tr><td><b>".htmlspecialchars($element['name'])."</b>:</td><td><i>".htmlspecialchars($element['phone']);
@@ -132,6 +140,7 @@ class PhonebookController {
 			if ($parameters[1] == "down") $direction = "down";
 		}
 		$book = $mybook->get_sorted_data($sort, $direction);
+		//todo: and here
 		include "uplinks.html";
 		include "sortlinks.html";
 		echo "<table>";
