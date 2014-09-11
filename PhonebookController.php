@@ -15,7 +15,7 @@ class PhonebookController {
 			Header("Location: $url");
 			exit();
 		} else {
-			if (@$_REQUEST['doAdd']) {
+			if (isset($_REQUEST['doAdd'])) {
 				$element = $_REQUEST['element'];
 				if (ini_get("magic_quotes_gpc"))
 					$element = array_map('stripslashes', $element);
@@ -72,7 +72,7 @@ class PhonebookController {
 		
 		if (count($searchbook) === 0 AND $flag === 1) echo "No match founded...<br><hr>";
 		
-		if (@$_REQUEST['doSearch']) {
+		if (isset($_REQUEST['doSearch'])) {
 			$element = $_REQUEST['element'];
 			if (ini_get("magic_quotes_gpc"))
 				$element = array_map('stripslashes', $element);

@@ -9,7 +9,6 @@ class phonebook {
 	private $mysqli;
 
 	public function __construct() {
-		GLOBAL $tblnm;
 		
 		$this->mysqli = new mysqli("localhost", $this->user, $this->pass, $this->db);
 		if (mysqli_connect_errno()) { 
