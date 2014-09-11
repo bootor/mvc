@@ -38,7 +38,8 @@ class phonebook {
 	}
 
 	public function add_to_db($element) {
-		if ($stmt = $this->mysqli->prepare("INSERT INTO $this->tblname (name, phone) VALUES (?, ?)")) {
+		// todo: use backticks around table and field names
+		if ($stmt = $this->mysqli->prepare("INSERT INTO `$this->tblname` (`name`, `phone`) VALUES (?, ?)")) {
 			$stmt->bind_param("ss", $element['name'], $element['phone']);
 			$stmt->execute();
 			$stmt->close(); 
