@@ -5,9 +5,9 @@ include "sortlinks.html"; ?>
 	<tr>
 		<td><b><?=htmlspecialchars($element['name'])?></b>:</td>
 		<td><i><?=htmlspecialchars($element['phone'])?></i></td>
-		<?php $url = $_SERVER['SCRIPT_NAME']."/delete/".$element['id']; ?>
+		<?php $url = dirname($_SERVER['SCRIPT_NAME'])."/delete/".$element['id']; ?>
 		<td><a href='<?=$url?>'>[Delete]</a></td>
-		<?php $url = $_SERVER['SCRIPT_NAME']."/name/".$element['id']; ?>
+		<?php $url = dirname($_SERVER['SCRIPT_NAME'])."/name/".$element['name']; ?>
 		<td><a href='<?=$url?>'>[Manage]</a></td>
 	</tr>
 <?php } ?>

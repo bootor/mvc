@@ -35,7 +35,7 @@ class phonebook {
 		
 		if ($stmt = $this->mysqli->prepare("CREATE TABLE IF NOT EXISTS `$this->phonestbl`
 			(id INT AUTO_INCREMENT PRIMARY KEY,
-			 name_id INT,
+			 name VARCHAR(60),
 			 phone VARCHAR(15))")) { 
 			$stmt->execute(); 
 			$stmt->close();
@@ -62,9 +62,9 @@ class phonebook {
 		}
 	}
 	
-	public function del_phones_by_name_id($delid) {
-		if ($stmt = $this->mysqli->prepare("DELETE FROM `$this->phonestbl` WHERE name_id=?")) { 
-			$stmt->bind_param("i", $delid);
+	public function del_phones_by_name($name) {
+		if ($stmt = $this->mysqli->prepare("DELETE FROM `$this->phonestbl` WHERE name=?")) { 
+			$stmt->bind_param("s", $name);
 			$stmt->execute();
 			$stmt->close();
 		}
@@ -136,9 +136,9 @@ class phonebook {
 		}
 	}
 
-	public function get_name_phone($id) {
-		if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->tblname` WHERE id=?")) {
-			$stmt->bind_param("i", $id);
+	public function get_name_phone($name) {
+		if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->tblname` WHERE name=?")) {
+			$stmt->bind_param("s", $name);
 			$stmt->execute();
 			$stmt->bind_result($id, $name, $phone);
 			$record = array();
@@ -150,14 +150,14 @@ class phonebook {
 		}
 	}
 
-	public function get_phones($id) {
-		if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->phonestbl` WHERE name_id=?")) {
-			$stmt->bind_param("i", $id);
+	public function get_phones($name) {
+		if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->phonestbl` WHERE name=?")) {
+			$stmt->bind_param("s", $name);
 			$stmt->execute();
-			$stmt->bind_result($id, $name_id, $phone);
+			$stmt->bind_result($id, $name, $phone);
 			$phones = array();
 			while ($stmt->fetch()) {
-				$phones[]=['id' => $id, 'name_id'=> $name_id, 'phone' => $phone];
+				$phones[]=['id' => $id, 'name'=> $name, 'phone' => $phone];
 			}
 			$stmt->close();
 			return $phones;
@@ -165,8 +165,8 @@ class phonebook {
 	}
 	
 	public function add_phone($element) {
-		if ($stmt = $this->mysqli->prepare("INSERT INTO `$this->phonestbl` (`name_id`, `phone`) VALUES (?, ?)")) {
-			$stmt->bind_param("ss", $element['id'], $element['phone']);
+		if ($stmt = $this->mysqli->prepare("INSERT INTO `$this->phonestbl` (`name`, `phone`) VALUES (?, ?)")) {
+			$stmt->bind_param("ss", $element['name'], $element['phone']);
 			$stmt->execute();
 			$stmt->close();
 		}

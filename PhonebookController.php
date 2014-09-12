@@ -116,11 +116,11 @@ class PhonebookController {
 	 */	
 		global $commandResult, $mybook;
 		$this->command = $command;
-		if (sizeof($this->command->getParameters()) > 0)
+		if (sizeof($this->command->getParameters()) > 1)
 		{
 			$parameters = $this->command->getParameters();
-			$mybook->del_phone($parameters[0]);
-			$url = dirname($_SERVER['SCRIPT_NAME']);
+			$mybook->del_phone($parameters[1]);
+			$url = dirname($_SERVER['SCRIPT_NAME'])."/name/".$parameters[0];
 			Header("Location: $url");
 			exit();
 		}
@@ -176,9 +176,9 @@ class PhonebookController {
 		$this->command = $command;
 		if (sizeof($this->command->getParameters()) > 0) {
 			$parameters = $this->command->getParameters();
-			$id = $parameters[0];
-			$record = $mybook->get_name_phone($id);
-			$phones = $mybook->get_phones($id);
+			$name = $parameters[0];
+			$record = $mybook->get_name_phone($name);
+			$phones = $mybook->get_phones($name);
 		}
 		else {
 			$url = dirname($_SERVER['SCRIPT_NAME']);
@@ -189,13 +189,13 @@ class PhonebookController {
 			$element = $_REQUEST['element'];
 			if (ini_get("magic_quotes_gpc"))
 				$element = array_map('stripslashes', $element);
-			$element['id'] = $id;
+			$element['name'] = $name;
 			if ($element['phone'] == "") {
 				$emptyfields = true;
 			} else {
 				$mybook->add_phone($element);
 				$url = dirname($_SERVER['SCRIPT_NAME']); 
-				$url .= '/name/'.$element['id'];
+				$url .= '/name/'.$element['name'];
 				Header("Location: $url");
 				exit();
 			}

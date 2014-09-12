@@ -1,7 +1,7 @@
 <?php include "uplinks.html"; ?>
 <table>
 	<tr>
-		<td><?=htmlspecialchars($record[0]['name'])?></td>
+		<td><b><?=htmlspecialchars($record[0]['name'])?>:</b></td>
 		<td><i><?=htmlspecialchars($record[0]['phone'])?></i></td>
 	</tr>
 <?php 
@@ -9,7 +9,7 @@ foreach($phones as $element) { ?>
 		<tr>
 			<td>&nbsp;</td>
 			<td><i><?=htmlspecialchars($element['phone'])?></i></td>
-			<?php $url = $_SERVER['SCRIPT_NAME']."/delphone/".$element['id']; ?>
+			<?php $url = dirname($_SERVER['SCRIPT_NAME'])."/delphone/".$element['name']."/".$element['id']; ?>
 			<td><a href='<?=$url?>'>[Delete]</a></td>
 		</tr>
 <?php } ?>
