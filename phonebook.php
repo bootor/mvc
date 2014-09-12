@@ -6,6 +6,7 @@ class phonebook {
 	private $db   = "mydb";
 	private $tblname = "phonebook";
 	private $searchtbl = "phonesearch";
+	private $phonestbl = "phonestbl";
 	private $mysqli;
 
 	public function __construct() {
@@ -16,7 +17,7 @@ class phonebook {
 			exit(); 
 		}
 		
-		if ($stmt = $this->mysqli->prepare("CREATE TABLE IF NOT EXISTS $this->tblname
+		if ($stmt = $this->mysqli->prepare("CREATE TABLE IF NOT EXISTS `$this->tblname`
 			(id INT AUTO_INCREMENT PRIMARY KEY,
 			 name VARCHAR(60),
 			 phone VARCHAR(15))")) { 
@@ -24,9 +25,17 @@ class phonebook {
 			$stmt->close();
 		}
 		
-		if ($stmt = $this->mysqli->prepare("CREATE TABLE IF NOT EXISTS $this->searchtbl
+		if ($stmt = $this->mysqli->prepare("CREATE TABLE IF NOT EXISTS `$this->searchtbl`
 			(id INT AUTO_INCREMENT PRIMARY KEY,
 			 name VARCHAR(60),
+			 phone VARCHAR(15))")) { 
+			$stmt->execute(); 
+			$stmt->close();
+		}
+		
+		if ($stmt = $this->mysqli->prepare("CREATE TABLE IF NOT EXISTS `$this->phonestbl`
+			(id INT AUTO_INCREMENT PRIMARY KEY,
+			 name_id INT,
 			 phone VARCHAR(15))")) { 
 			$stmt->execute(); 
 			$stmt->close();
@@ -38,7 +47,6 @@ class phonebook {
 	}
 
 	public function add_to_db($element) {
-		// todo: use backticks around table and field names
 		if ($stmt = $this->mysqli->prepare("INSERT INTO `$this->tblname` (`name`, `phone`) VALUES (?, ?)")) {
 			$stmt->bind_param("ss", $element['name'], $element['phone']);
 			$stmt->execute();
@@ -47,7 +55,15 @@ class phonebook {
 	}
 
 	public function del_from_db($delid) {
-		if ($stmt = $this->mysqli->prepare("DELETE FROM $this->tblname WHERE id=?")) { 
+		if ($stmt = $this->mysqli->prepare("DELETE FROM `$this->tblname` WHERE id=?")) { 
+			$stmt->bind_param("i", $delid);
+			$stmt->execute();
+			$stmt->close();
+		}
+	}
+	
+	public function del_phones_by_name_id($delid) {
+		if ($stmt = $this->mysqli->prepare("DELETE FROM `$this->phonestbl` WHERE name_id=?")) { 
 			$stmt->bind_param("i", $delid);
 			$stmt->execute();
 			$stmt->close();
@@ -57,7 +73,7 @@ class phonebook {
 	public function get_sorted_data($sort, $direction) {
 		$direction == "down" ? $sqladdon = ' DESC' : $sqladdon = '';
 		$sort == 'phone' ? $sortflag = 'phone' : $sortflag = 'name';
-		if ($stmt = $this->mysqli->prepare("SELECT * FROM $this->tblname ORDER BY ".$sortflag.$sqladdon)) {
+		if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->tblname` ORDER BY ".$sortflag.$sqladdon)) {
 			$stmt->execute();
 			$stmt->bind_result($id, $name, $phone);
 			$book = array();
@@ -72,7 +88,7 @@ class phonebook {
 	public function get_searched_data($sort, $direction) {
 		$direction == "down" ? $sqladdon = ' DESC' : $sqladdon = '';
 		$sort == 'phone' ? $sortflag = 'phone' : $sortflag = 'name';
-		if ($stmt = $this->mysqli->prepare("SELECT * FROM $this->searchtbl ORDER BY ".$sortflag.$sqladdon)) {
+		if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->searchtbl` ORDER BY ".$sortflag.$sqladdon)) {
 			$stmt->execute();
 			$stmt->bind_result($id, $name, $phone);
 			$book = array();
@@ -87,7 +103,7 @@ class phonebook {
 	public function get_search_data($element) {
 		$searchbook = [];
 		if ($element['name'] != "" AND $element['phone'] != "") {
-			if ($stmt = $this->mysqli->prepare("SELECT * FROM $this->tblname WHERE name LIKE CONCAT('%', ?, '%') AND phone LIKE CONCAT('%', ?, '%')")) {
+			if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->tblname` WHERE `name` LIKE CONCAT('%', ?, '%') AND `phone` LIKE CONCAT('%', ?, '%')")) {
 				$stmt->bind_param("ss", $element['name'], $element['phone']);
 				$stmt->execute(); 
 				$stmt->bind_result($id, $name, $phone);
@@ -97,7 +113,7 @@ class phonebook {
 				$stmt->close(); 
 			}
 		} else {
-			if ($stmt = $this->mysqli->prepare("SELECT * FROM $this->tblname WHERE (name LIKE CONCAT('%', ?, '%') AND (? != '')) OR (phone LIKE CONCAT('%', ?, '%') AND (? != ''))")) {
+			if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->tblname` WHERE (`name` LIKE CONCAT('%', ?, '%') AND (? != '')) OR (`phone` LIKE CONCAT('%', ?, '%') AND (? != ''))")) {
 				$stmt->bind_param("ssss", $element['name'], $element['name'], $element['phone'], $element['phone']);
 				$stmt->execute(); 
 				$stmt->bind_result($id, $name, $phone);
@@ -107,17 +123,62 @@ class phonebook {
 				$stmt->close(); 
 			}
 		}
-		if ($stmt = $this->mysqli->prepare("TRUNCATE $this->searchtbl")) { 
+		if ($stmt = $this->mysqli->prepare("TRUNCATE `$this->searchtbl`")) { 
 			$stmt->execute();
 			$stmt->close();
 		}
 		foreach ($searchbook as $element) {
-			if ($stmt = $this->mysqli->prepare("INSERT INTO $this->searchtbl (name, phone) VALUES (?, ?)")) {
+			if ($stmt = $this->mysqli->prepare("INSERT INTO `$this->searchtbl` (`name`, `phone`) VALUES (?, ?)")) {
 				$stmt->bind_param("ss", $element['name'], $element['phone']);
 				$stmt->execute();
 				$stmt->close();
 			}
 		}
 	}
+
+	public function get_name_phone($id) {
+		if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->tblname` WHERE id=?")) {
+			$stmt->bind_param("i", $id);
+			$stmt->execute();
+			$stmt->bind_result($id, $name, $phone);
+			$record = array();
+			while ($stmt->fetch()) {
+				$record[]=['id' => $id, 'name' => $name, 'phone' => $phone];
+			}
+			$stmt->close();
+			return $record;
+		}
+	}
+
+	public function get_phones($id) {
+		if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->phonestbl` WHERE name_id=?")) {
+			$stmt->bind_param("i", $id);
+			$stmt->execute();
+			$stmt->bind_result($id, $name_id, $phone);
+			$phones = array();
+			while ($stmt->fetch()) {
+				$phones[]=['id' => $id, 'name_id'=> $name_id, 'phone' => $phone];
+			}
+			$stmt->close();
+			return $phones;
+		}
+	}
+	
+	public function add_phone($element) {
+		if ($stmt = $this->mysqli->prepare("INSERT INTO `$this->phonestbl` (`name_id`, `phone`) VALUES (?, ?)")) {
+			$stmt->bind_param("ss", $element['id'], $element['phone']);
+			$stmt->execute();
+			$stmt->close();
+		}
+	}
+
+	public function del_phone($delid) {
+		if ($stmt = $this->mysqli->prepare("DELETE FROM `$this->phonestbl` WHERE id=?")) { 
+			$stmt->bind_param("i", $delid);
+			$stmt->execute();
+			$stmt->close();
+		}
+	}
+
 }
 ?>

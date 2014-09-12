@@ -100,6 +100,26 @@ class PhonebookController {
 		{
 			$parameters = $this->command->getParameters();
 			$mybook->del_from_db($parameters[0]);
+			$mybook->del_phones_by_name_id($parameters[0]);
+			$url = dirname($_SERVER['SCRIPT_NAME']);
+			Header("Location: $url");
+			exit();
+		}
+	}
+	
+	public function delphone($command) {
+	/**
+	 * Delete records from db
+	 * 
+	 * @param Route_Command $command
+	 * 
+	 */	
+		global $commandResult, $mybook;
+		$this->command = $command;
+		if (sizeof($this->command->getParameters()) > 0)
+		{
+			$parameters = $this->command->getParameters();
+			$mybook->del_phone($parameters[0]);
 			$url = dirname($_SERVER['SCRIPT_NAME']);
 			Header("Location: $url");
 			exit();
@@ -143,5 +163,44 @@ class PhonebookController {
 		$book = $mybook->get_sorted_data($sort, $direction);
 		include "main.html";
 	}
+
+	public function name($command) {
+	/**
+	 * Show profile with name and phones
+	 * 
+	 * @param Route_Command $command
+	 * 
+	 */	
+		global $commandResult, $mybook;
+		$emptyfields = false;
+		$this->command = $command;
+		if (sizeof($this->command->getParameters()) > 0) {
+			$parameters = $this->command->getParameters();
+			$id = $parameters[0];
+			$record = $mybook->get_name_phone($id);
+			$phones = $mybook->get_phones($id);
+		}
+		else {
+			$url = dirname($_SERVER['SCRIPT_NAME']);
+			Header("Location: $url");
+			exit();
+		}
+		if (isset($_REQUEST['doAddPhone'])) {
+			$element = $_REQUEST['element'];
+			if (ini_get("magic_quotes_gpc"))
+				$element = array_map('stripslashes', $element);
+			$element['id'] = $id;
+			if ($element['phone'] == "") {
+				$emptyfields = true;
+			} else {
+				$mybook->add_phone($element);
+				$url = dirname($_SERVER['SCRIPT_NAME']); 
+				$url .= '/name/'.$element['id'];
+				Header("Location: $url");
+				exit();
+			}
+		}
+		include "name.html";
+}
 }
 ?>
