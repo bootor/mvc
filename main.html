@@ -1,0 +1,13 @@
+<?php include "uplinks.html";
+include "sortlinks.html"; ?>
+<table>
+<?php foreach($book as $element) { ?>
+	<tr>
+		<td><b><?=htmlspecialchars($element['name'])?></b>:</td>
+		<td><i><?=htmlspecialchars($element['phone'])?></i></td>
+		<?php $url = $_SERVER['SCRIPT_NAME']."/delete/".$element['id']; ?>
+		<td><a href='<?=$url?>'>[Delete]</a></td>
+	</tr>
+<?php } ?>
+</table>
+<hr>

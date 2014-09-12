@@ -1,8 +1,8 @@
 <?php
 class Route_Command
         {
-        var $commandName = '';
-        var $parameters = array();
+        public $commandName = '';
+        public $parameters = array();
         
         function Route_Command($commandName,$parameters)
                 {

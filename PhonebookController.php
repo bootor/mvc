@@ -1,16 +1,15 @@
 <?php
 class PhonebookController {
 	
+	public function add($command) {
 	/**
 	 * Create new entity in db
 	 * 
 	 * @param Route_Command $command
 	 * 
 	 */
-	public function add($command) {
 		global $commandResult, $mybook;
 		$this->command = $command;
-		include "uplinks.html";
 		$emptyfields = false;
 		if (sizeof($this->command->getParameters()) >= 2) {
 			$parameters = $this->command->getParameters();
@@ -35,20 +34,23 @@ class PhonebookController {
 				}
 			}
 		}
-		include "addform.html";
-		if ($emptyfields == true)
-			include "addemptyfields.html";
+		include "add.html";
 	}
 
 	public function search($command) {
+	/**
+	 * Search records in db
+	 * 
+	 * @param Route_Command $command
+	 * 
+	 */	
 		global $commandResult, $mybook;
 		$this->command = $command;
 		$flag = 0;
 		$searchbook = array();
 		$sort = "name";
 		$direction = 'up';
-		$emptyfields = true;
-		include "uplinks.html";
+		$emptyfields = false;
 		$element['name'] = '';
 		$element['phone'] = '';
 		if (sizeof($this->command->getParameters()) > 1) {
@@ -61,21 +63,11 @@ class PhonebookController {
 			if (sizeof($this->command->getParameters()) > 3)
 				$element['phone'] = $parameters[3];
 			if ($element['name'] != '' OR $element['phone'] != '') {
-				$emptyfields = false;
 				$flag = 1;
 				$mybook->get_search_data($element);
 			}
 		}
 		$searchbook = $mybook->get_searched_data($sort, $direction);
-		// todo: you can call include from view file. so one view file can include some sub-view files.
-		include "searchform.html";
-		echo "<hr>";
-		include "searchsortlinks.html";
-		echo "<table>";
-		foreach($searchbook as $element) {
-		echo "<tr><td><b>".htmlspecialchars($element['name'])."</b>:</td><td><i>".htmlspecialchars($element['phone'])."</i></td></tr>";
-		}
-		echo "</table><hr>";
 		
 		if (count($searchbook) === 0 AND $flag === 1) echo "No match founded...<br><hr>";
 		
@@ -84,7 +76,7 @@ class PhonebookController {
 			if (ini_get("magic_quotes_gpc"))
 				$element = array_map('stripslashes', $element);
 			if (($element['name'] == "") AND ($element['phone'] == "")) {
-				echo "<hr>Empty fields. Search is impossible.<hr>";
+				$emptyfields = true; // echo "<hr>Empty fields. Search is impossible.<hr>";
 			} else {
 				$url = dirname($_SERVER['SCRIPT_NAME']); 
 				$url .= '/search/'.$element['name'].'/'.$element['phone'];
@@ -92,12 +84,18 @@ class PhonebookController {
 				exit();
 			}
 		}
+		include "search.html";
 	}
 
 	public function delete($command) {
+	/**
+	 * Delete records from db
+	 * 
+	 * @param Route_Command $command
+	 * 
+	 */	
 		global $commandResult, $mybook;
 		$this->command = $command;
-		include "uplinks.html";
 		if (sizeof($this->command->getParameters()) > 0)
 		{
 			$parameters = $this->command->getParameters();
@@ -109,6 +107,12 @@ class PhonebookController {
 	}
 
 	public function index($command) {
+	/**
+	 * Show all records from db
+	 * 
+	 * @param Route_Command $command
+	 * 
+	 */	
 		global $commandResult, $mybook;
 		$this->command = $command;
 		$sort = 'name';
@@ -117,19 +121,16 @@ class PhonebookController {
 			if ($parameters[0] == "1") $sort = "phone";
 		}
 		$book = $mybook->get_sorted_data($sort, 'up');
-		include "uplinks.html";
-		include "sortlinks.html";
-		//todo: same here
-		echo "<table>";
-		foreach($book as $element) {
-			echo "<tr><td><b>".htmlspecialchars($element['name'])."</b>:</td><td><i>".htmlspecialchars($element['phone']);
-			$url = $_SERVER['SCRIPT_NAME']."/delete/".$element['id'];
-			echo "</i></td><td><a href='$url'>[Delete]</a></td></tr>";
-		}
-		echo "</table><hr>";
+		include "main.html";
 	}
 
 	public function tosort($command) {
+	/**
+	 * Sort records from db on main page
+	 * 
+	 * @param Route_Command $command
+	 * 
+	 */	
 		global $commandResult, $mybook;
 		$this->command = $command;
 		$sort = 'name';
@@ -140,16 +141,7 @@ class PhonebookController {
 			if ($parameters[1] == "down") $direction = "down";
 		}
 		$book = $mybook->get_sorted_data($sort, $direction);
-		//todo: and here
-		include "uplinks.html";
-		include "sortlinks.html";
-		echo "<table>";
-		foreach($book as $element) {
-			echo "<tr><td><b>".htmlspecialchars($element['name'])."</b>:</td><td><i>".htmlspecialchars($element['phone']);
-			$url = $_SERVER['SCRIPT_NAME']."/delete/".$element['id'];
-			echo "</i></td><td><a href='$url'>[Delete]</a></td></tr>";
-		}
-		echo "</table><hr>";
+		include "main.html";
 	}
 }
 ?>

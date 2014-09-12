@@ -1,7 +1,7 @@
 <?php
 class Route_UrlInterpreter 
 	{
-    var $command;
+    public $command;
 	function Route_UrlInterpreter()
 		{
 		$requestURI = explode('/', $_SERVER['REQUEST_URI']);
