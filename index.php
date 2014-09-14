@@ -4,6 +4,7 @@ include('route.urlinterpreter.php');
 include('route.commanddispatcher.php');
 include('phonebook.php');
 
+// todo: remove this global variables. commandResult not even used
 global $mybook, $commandResult;
 
 // todo: move phonebook creation to controller
