@@ -1,16 +1,15 @@
 <?php
 class PhonebookController {
-	
-	// todo: all comments should be before function
-	public function add($command) {
+	include('phonebook.php');
+
 	/**
 	 * Create new entity in db
 	 * 
 	 * @param Route_Command $command
 	 * 
 	 */
-		// todo: you don't use commandResult, remove it. $mybook variable beter to create in constructor
-		global $commandResult, $mybook;
+	public function add($command) {
+		$mybook = new phonebook();
 		$this->command = $command;
 		$emptyfields = false;
 		// todo: move all logic of elemtn creation from command to separate function
@@ -19,10 +18,7 @@ class PhonebookController {
 			$element['name'] = $parameters[0];
 			$element['phone'] = $parameters[1];
 			$mybook->add_to_db($element);
-			// todo: create function for redirect and move it to parent class (e.g. BaseController)
-			$url = dirname($_SERVER['SCRIPT_NAME']);
-			Header("Location: $url");
-			exit();
+			gotomain();
 		} else {
 			if (isset($_REQUEST['doAdd'])) {
 				$element = $_REQUEST['element'];
@@ -31,24 +27,32 @@ class PhonebookController {
 				if (($element['name'] == "") OR ($element['phone'] == "")) {
 					$emptyfields = true;
 				} else {
-					$url = dirname($_SERVER['SCRIPT_NAME']); 
 					$mybook->add_to_db($element);
-					Header("Location: $url");
-					exit();
+					gotomain();
 				}
 			}
 		}
 		include "add.html";
 	}
-
-	public function search($command) {
+	
+	/**
+	 * Link to main page
+	 * 
+	 */
+	 public function gotomain() {
+		$url = dirname($_SERVER['SCRIPT_NAME']);
+		Header("Location: $url");
+		exit();
+	}
+	
 	/**
 	 * Search records in db
 	 * 
 	 * @param Route_Command $command
 	 * 
 	 */	
-		global $commandResult, $mybook;
+	public function search($command) {
+		$mybook = new phonebook();
 		$this->command = $command;
 		$flag = 0;
 		$searchbook = array();
@@ -92,34 +96,32 @@ class PhonebookController {
 		include "search.html";
 	}
 
-	public function delete($command) {
 	/**
 	 * Delete records from db
 	 * 
 	 * @param Route_Command $command
 	 * 
 	 */	
-		global $commandResult, $mybook;
+	public function delete($command) {
+		$mybook = new phonebook();
 		$this->command = $command;
 		if (sizeof($this->command->getParameters()) > 0)
 		{
 			$parameters = $this->command->getParameters();
 			$mybook->del_from_db($parameters[0]);
 			$mybook->del_phones_by_name_id($parameters[0]);
-			$url = dirname($_SERVER['SCRIPT_NAME']);
-			Header("Location: $url");
-			exit();
+			gotomain();
 		}
 	}
 	
-	public function delphone($command) {
 	/**
 	 * Delete records from db
 	 * 
 	 * @param Route_Command $command
 	 * 
 	 */	
-		global $commandResult, $mybook;
+	public function delphone($command) {
+		$mybook = new phonebook();
 		$this->command = $command;
 		if (sizeof($this->command->getParameters()) > 1)
 		{
@@ -131,14 +133,14 @@ class PhonebookController {
 		}
 	}
 
-	public function index($command) {
 	/**
 	 * Show all records from db
 	 * 
 	 * @param Route_Command $command
 	 * 
 	 */	
-		global $commandResult, $mybook;
+	public function index($command) {
+		$mybook = new phonebook();
 		$this->command = $command;
 		$sort = 'name';
 		if (sizeof($this->command->getParameters()) > 0) {
@@ -149,14 +151,14 @@ class PhonebookController {
 		include "main.html";
 	}
 
-	public function tosort($command) {
 	/**
 	 * Sort records from db on main page
 	 * 
 	 * @param Route_Command $command
 	 * 
 	 */	
-		global $commandResult, $mybook;
+	public function tosort($command) {
+		$mybook = new phonebook();
 		$this->command = $command;
 		$sort = 'name';
 		$direction = 'up';
@@ -169,14 +171,14 @@ class PhonebookController {
 		include "main.html";
 	}
 
-	public function name($command) {
 	/**
 	 * Show profile with name and phones
 	 * 
 	 * @param Route_Command $command
 	 * 
 	 */	
-		global $commandResult, $mybook;
+	public function name($command) {
+		$mybook = new phonebook();
 		$emptyfields = false;
 		$this->command = $command;
 		if (sizeof($this->command->getParameters()) > 0) {
@@ -186,9 +188,7 @@ class PhonebookController {
 			$phones = $mybook->get_phones($name);
 		}
 		else {
-			$url = dirname($_SERVER['SCRIPT_NAME']);
-			Header("Location: $url");
-			exit();
+			gotomain();
 		}
 		if (isset($_REQUEST['doAddPhone'])) {
 			$element = $_REQUEST['element'];
