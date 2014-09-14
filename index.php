@@ -6,11 +6,13 @@ include('phonebook.php');
 
 global $mybook, $commandResult;
 
+// todo: move phonebook creation to controller
 $mybook = new phonebook();
 $urlInterpreter = new Route_UrlInterpreter();
 $command = $urlInterpreter->getCommand();
 $commandDispatcher = new Route_CommandDispatcher($command);
 
+// todo: you never use this function, remove it
 function getScriptUrl() {
 	$scriptName = explode('/',$_SERVER['SCRIPT_NAME']);
 	unset($scriptName[sizeof($scriptName)-1]);
@@ -19,6 +21,7 @@ function getScriptUrl() {
 }
 ?>
 
+<!-- todo: use view files -->
 <html>
 	<body>
 		<p>
