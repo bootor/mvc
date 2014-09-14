@@ -1,6 +1,7 @@
 <?php
 class PhonebookController {
 	
+	// todo: all comments should be before function
 	public function add($command) {
 	/**
 	 * Create new entity in db
@@ -8,14 +9,17 @@ class PhonebookController {
 	 * @param Route_Command $command
 	 * 
 	 */
+		// todo: you don't use commandResult, remove it. $mybook variable beter to create in constructor
 		global $commandResult, $mybook;
 		$this->command = $command;
 		$emptyfields = false;
+		// todo: move all logic of elemtn creation from command to separate function
 		if (sizeof($this->command->getParameters()) >= 2) {
 			$parameters = $this->command->getParameters();
 			$element['name'] = $parameters[0];
 			$element['phone'] = $parameters[1];
 			$mybook->add_to_db($element);
+			// todo: create function for redirect and move it to parent class (e.g. BaseController)
 			$url = dirname($_SERVER['SCRIPT_NAME']);
 			Header("Location: $url");
 			exit();
@@ -53,6 +57,7 @@ class PhonebookController {
 		$emptyfields = false;
 		$element['name'] = '';
 		$element['phone'] = '';
+		// todo: use separate functions
 		if (sizeof($this->command->getParameters()) > 1) {
 			$parameters = $this->command->getParameters();
 			$parameters[0] == 'phone' ? $sort = 'phone' : $sort = 'name';
