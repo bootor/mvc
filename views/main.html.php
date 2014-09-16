@@ -1,5 +1,5 @@
-<?php include "uplinks.html";
-include "sortlinks.html"; ?>
+<?php include "uplinks.html.php";
+include "sortlinks.html.php"; ?>
 <table>
 <?php foreach($book as $element) { ?>
 	<tr>

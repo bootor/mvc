@@ -1,5 +1,5 @@
 <?php
-include "PhonebookController.php";
+include (__DIR__ . '/../controllers/PhonebookController.php');
 
 class Route_CommandDispatcher {
 	public $command;

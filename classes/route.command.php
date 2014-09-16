@@ -3,7 +3,7 @@ class Route_Command
         {
         public $commandName = '';
         public $parameters = array();
-        
+
         function Route_Command($commandName,$parameters)
                 {
                 $this->commandName = $commandName;
@@ -18,4 +18,3 @@ class Route_Command
                 return $this->parameters;
                 }
         }
-?>

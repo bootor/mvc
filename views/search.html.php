@@ -1,7 +1,4 @@
-<?php include "uplinks.html"; ?>
-<!--
-todo: create separate class for Element with trivial getters and setters. Use it in controller and db functions
--->
+<?php include "uplinks.html.php"; ?>
 <form action="" method="post">
 	<table>
 		<tr valign="top">
@@ -19,7 +16,7 @@ todo: create separate class for Element with trivial getters and setters. Use it
 	</table>
 </form>
 <hr>
-<?php include "searchsortlinks.html"; ?>
+<?php include "searchsortlinks.html.php"; ?>
 <table>
 <?php foreach($searchbook as $element) { ?>
 	<tr>
@@ -28,4 +25,4 @@ todo: create separate class for Element with trivial getters and setters. Use it
 <?php } ?>
 </table>
 <hr>
-<?php if ($emptyfields == true) include "searchemptyfields.html"; ?>
+<?php if ($emptyfields == true) include "searchemptyfields.html.php"; ?>

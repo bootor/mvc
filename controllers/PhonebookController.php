@@ -1,7 +1,6 @@
 <?php
 class PhonebookController {
-	include('phonebook.php');
-
+	
 	/**
 	 * Create new entity in db
 	 * 
@@ -12,13 +11,11 @@ class PhonebookController {
 		$mybook = new phonebook();
 		$this->command = $command;
 		$emptyfields = false;
-		// todo: move all logic of elemtn creation from command to separate function
 		if (sizeof($this->command->getParameters()) >= 2) {
 			$parameters = $this->command->getParameters();
 			$element['name'] = $parameters[0];
 			$element['phone'] = $parameters[1];
 			$mybook->add_to_db($element);
-			gotomain();
 		} else {
 			if (isset($_REQUEST['doAdd'])) {
 				$element = $_REQUEST['element'];
@@ -28,23 +25,15 @@ class PhonebookController {
 					$emptyfields = true;
 				} else {
 					$mybook->add_to_db($element);
-					gotomain();
+					$url = dirname($_SERVER['SCRIPT_NAME']);
+					Header("Location: $url");
+					exit();
 				}
 			}
 		}
-		include "add.html";
+		include(__DIR__ . "/../views/add.html.php");
 	}
-	
-	/**
-	 * Link to main page
-	 * 
-	 */
-	 public function gotomain() {
-		$url = dirname($_SERVER['SCRIPT_NAME']);
-		Header("Location: $url");
-		exit();
-	}
-	
+
 	/**
 	 * Search records in db
 	 * 
@@ -61,7 +50,6 @@ class PhonebookController {
 		$emptyfields = false;
 		$element['name'] = '';
 		$element['phone'] = '';
-		// todo: use separate functions
 		if (sizeof($this->command->getParameters()) > 1) {
 			$parameters = $this->command->getParameters();
 			$parameters[0] == 'phone' ? $sort = 'phone' : $sort = 'name';
@@ -88,12 +76,12 @@ class PhonebookController {
 				$emptyfields = true; // echo "<hr>Empty fields. Search is impossible.<hr>";
 			} else {
 				$url = dirname($_SERVER['SCRIPT_NAME']); 
-				$url .= '/search/'.$element['name'].'/'.$element['phone'];
+				$url .= '/search/'.$sort.'/'.$direction.'/'.$element['name'].'/'.$element['phone'];
 				Header("Location: $url");
 				exit();
 			}
 		}
-		include "search.html";
+		include(__DIR__ . "/../views/search.html.php");
 	}
 
 	/**
@@ -109,9 +97,11 @@ class PhonebookController {
 		{
 			$parameters = $this->command->getParameters();
 			$mybook->del_from_db($parameters[0]);
-			$mybook->del_phones_by_name_id($parameters[0]);
-			gotomain();
+			$mybook->del_phones_by_name($parameters[0]);
 		}
+		$url = dirname($_SERVER['SCRIPT_NAME']);
+		Header("Location: $url");
+		exit();
 	}
 	
 	/**
@@ -148,7 +138,7 @@ class PhonebookController {
 			if ($parameters[0] == "1") $sort = "phone";
 		}
 		$book = $mybook->get_sorted_data($sort, 'up');
-		include "main.html";
+		include __DIR__ . "/../views/main.html.php";
 	}
 
 	/**
@@ -168,7 +158,7 @@ class PhonebookController {
 			if ($parameters[1] == "down") $direction = "down";
 		}
 		$book = $mybook->get_sorted_data($sort, $direction);
-		include "main.html";
+		include(__DIR__ . "/../views/main.html.php");
 	}
 
 	/**
@@ -188,7 +178,9 @@ class PhonebookController {
 			$phones = $mybook->get_phones($name);
 		}
 		else {
-			gotomain();
+			$url = dirname($_SERVER['SCRIPT_NAME']);
+			Header("Location: $url");
+			exit();
 		}
 		if (isset($_REQUEST['doAddPhone'])) {
 			$element = $_REQUEST['element'];
@@ -205,7 +197,7 @@ class PhonebookController {
 				exit();
 			}
 		}
-		include "name.html";
+		include(__DIR__ . "/../views/name.html.php");
 }
 }
 ?>

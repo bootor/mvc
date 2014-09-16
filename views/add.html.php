@@ -1,18 +1,4 @@
-<?php include "uplinks.html"; ?>
-<!--
-todo: create subfolders:
-/Controllers
-  - PhonebookController.php
-/Views
-  - index.html.php
-  - search.html.php
-  - ...
-/Classes
-  - command dispatcher class . php
-  - data base stuff . php
-  - ...
-
--->
+<?php include "uplinks.html.php"; ?>
 <form method='post'>
 	<table>
 		<tr valign='top'>
@@ -30,4 +16,4 @@ todo: create subfolders:
 	</table>
 </form>
 <hr>
-<?php if ($emptyfields == true) include "addemptyfields.html"; ?>
+<?php if ($emptyfields == true) include "addemptyfields.html.php"; ?>

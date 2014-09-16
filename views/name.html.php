@@ -1,4 +1,4 @@
-<?php include "uplinks.html"; ?>
+<?php include "uplinks.html.php"; ?>
 <table>
 	<tr>
 		<td><b><?=htmlspecialchars($record[0]['name'])?>:</b></td>
@@ -28,4 +28,4 @@ foreach($phones as $element) { ?>
 	</table>
 </form>
 <hr>
-<?php if ($emptyfields == true) include "addemptyfields.html"; ?>
+<?php if ($emptyfields == true) include "addemptyfields.html.php"; ?>
