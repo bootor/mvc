@@ -1,7 +1,7 @@
 <?php
 class PhonebookController {
-	
-	/**
+
+    /**
 	 * Create new entity in db
 	 * 
 	 * @param Route_Command $command
@@ -16,6 +16,9 @@ class PhonebookController {
 			$element['name'] = $parameters[0];
 			$element['phone'] = $parameters[1];
 			$mybook->add_to_db($element);
+            $url = dirname($_SERVER['SCRIPT_NAME']);
+            Header("Location: $url");
+            exit();
 		} else {
 			if (isset($_REQUEST['doAdd'])) {
 				$element = $_REQUEST['element'];
@@ -84,7 +87,7 @@ class PhonebookController {
 		include(__DIR__ . "/../views/search.html.php");
 	}
 
-	/**
+    /**
 	 * Delete records from db
 	 * 
 	 * @param Route_Command $command
@@ -187,7 +190,7 @@ class PhonebookController {
 			if (ini_get("magic_quotes_gpc"))
 				$element = array_map('stripslashes', $element);
 			$element['name'] = $name;
-			if ($element['phone'] == "") {
+            if ($element['phone'] == "") {
 				$emptyfields = true;
 			} else {
 				$mybook->add_phone($element);

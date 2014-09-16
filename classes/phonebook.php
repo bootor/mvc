@@ -54,16 +54,16 @@ class phonebook {
 		}
 	}
 
-	public function del_from_db($delid) {
-		if ($stmt = $this->mysqli->prepare("DELETE FROM `$this->tblname` WHERE id=?")) { 
-			$stmt->bind_param("i", $delid);
+	public function del_from_db($name) {
+		if ($stmt = $this->mysqli->prepare("DELETE FROM `$this->tblname` WHERE name=?")) {
+			$stmt->bind_param("s", $name);
 			$stmt->execute();
 			$stmt->close();
 		}
 	}
 	
 	public function del_phones_by_name($name) {
-		if ($stmt = $this->mysqli->prepare("DELETE FROM `$this->phonestbl` WHERE name=?")) { 
+		if ($stmt = $this->mysqli->prepare("DELETE FROM `$this->phonestbl` WHERE name=?")) {
 			$stmt->bind_param("s", $name);
 			$stmt->execute();
 			$stmt->close();
