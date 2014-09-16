@@ -8,4 +8,3 @@ $urlInterpreter = new Route_UrlInterpreter();
 $command = $urlInterpreter->getCommand();
 $commandDispatcher = new Route_CommandDispatcher($command);
 $commandDispatcher->Dispatch();
-echo "123";
