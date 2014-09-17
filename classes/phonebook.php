@@ -86,8 +86,10 @@ class phonebook {
 	}
 
 	public function get_searched_data($sort, $direction) {
-		$direction == "down" ? $sqladdon = ' DESC' : $sqladdon = '';
-		$sort == 'phone' ? $sortflag = 'phone' : $sortflag = 'name';
+		$this->direction = $direction;
+        $this->sort = $sort;
+        $this->direction == "down" ? $sqladdon = ' DESC' : $sqladdon = '';
+		$this->sort == 'phone' ? $sortflag = 'phone' : $sortflag = 'name';
 		if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->searchtbl` ORDER BY ".$sortflag.$sqladdon)) {
 			$stmt->execute();
 			$stmt->bind_result($id, $name, $phone);

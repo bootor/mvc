@@ -1,4 +1,6 @@
-<?php include "uplinks.html.php"; ?>
+<?php
+include "head.html.php";
+include "uplinks.html.php"; ?>
 <form method='post'>
 	<table>
 		<tr valign='top'>
@@ -16,4 +18,5 @@
 	</table>
 </form>
 <hr>
-<?php if ($emptyfields == true) include "addemptyfields.html.php"; ?>
+<?php if ($emptyfields == true) include "addemptyfields.html.php";
+include "bottom.html.php"; ?>

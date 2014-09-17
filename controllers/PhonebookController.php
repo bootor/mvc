@@ -49,7 +49,7 @@ class PhonebookController {
 		$flag = 0;
 		$searchbook = array();
 		$sort = "name";
-		$direction = 'up';
+		$direction = "up";
 		$emptyfields = false;
 		$element['name'] = '';
 		$element['phone'] = '';
@@ -60,14 +60,13 @@ class PhonebookController {
 		}
 		if (sizeof($this->command->getParameters()) > 2) {
 			$element['name'] = $parameters[2];
-			if (sizeof($this->command->getParameters()) > 3)
-				$element['phone'] = $parameters[3];
+			if (sizeof($this->command->getParameters()) > 3) $element['phone'] = $parameters[3];
 			if ($element['name'] != '' OR $element['phone'] != '') {
 				$flag = 1;
 				$mybook->get_search_data($element);
 			}
 		}
-		$searchbook = $mybook->get_searched_data($sort, $direction);
+        $searchbook = $mybook->get_searched_data($sort, $direction);
 		
 		if (count($searchbook) === 0 AND $flag === 1) echo "No match founded...<br><hr>";
 		

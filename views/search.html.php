@@ -1,4 +1,6 @@
-<?php include "uplinks.html.php"; ?>
+<?php
+include "head.html.php";
+include "uplinks.html.php"; ?>
 <form action="" method="post">
 	<table>
 		<tr valign="top">
@@ -25,4 +27,5 @@
 <?php } ?>
 </table>
 <hr>
-<?php if ($emptyfields == true) include "searchemptyfields.html.php"; ?>
+<?php if ($emptyfields == true) include "searchemptyfields.html.php";
+include "bottom.html.php"; ?>

@@ -1,5 +1,8 @@
-<?php include "uplinks.html.php";
+<?php
+include "head.html.php";
+include "uplinks.html.php";
 include "sortlinks.html.php"; ?>
+
 <table>
 <?php foreach($book as $element) { ?>
 	<tr>
@@ -13,3 +16,5 @@ include "sortlinks.html.php"; ?>
 <?php } ?>
 </table>
 <hr>
+
+<?php include "bottom.html.php"; ?>
