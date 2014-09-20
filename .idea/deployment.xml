@@ -5,7 +5,7 @@
       <paths name="rpi">
         <serverdata>
           <mappings>
-            <mapping deploy="/var/www/mvc" local="$PROJECT_DIR$" web="/mvc/" />
+            <mapping deploy="/mvc" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

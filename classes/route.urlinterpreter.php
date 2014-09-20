@@ -18,10 +18,14 @@ class Route_UrlInterpreter
 
 		$commandArray = array_values($requestURI);
 		$commandName = $commandArray[0];
-		$parameters = array_slice($commandArray,1);
-		$this->command = new Route_Command($commandArray[0],$parameters);
-
-		}
+        $decodedCommandName = urldecode($commandName);
+        $parameters = array_slice($commandArray,1);
+        $decodedParameters = array();
+        foreach ($parameters as $param) {
+            array_push($decodedParameters, urldecode($param));
+            }
+            $this->command = new Route_Command($decodedCommandName,$decodedParameters);
+        }
 
 	function getCommand()
 		{

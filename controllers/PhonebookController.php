@@ -49,7 +49,7 @@ class PhonebookController {
 		$flag = 0;
 		$searchbook = array();
 		$sort = "name";
-		$direction = "up";
+		$direction = "down";
 		$emptyfields = false;
 		$element['name'] = '';
 		$element['phone'] = '';
@@ -59,8 +59,9 @@ class PhonebookController {
 			$parameters[1] == 'down' ? $direction = 'down' : $direction = 'up';
 		}
 		if (sizeof($this->command->getParameters()) > 2) {
-			$element['name'] = $parameters[2];
-			if (sizeof($this->command->getParameters()) > 3) $element['phone'] = $parameters[3];
+            $parameters = $this->command->getParameters();
+            $element['name'] = $parameters[2];
+            if (sizeof($this->command->getParameters()) > 3) $element['phone'] = $parameters[3];
 			if ($element['name'] != '' OR $element['phone'] != '') {
 				$flag = 1;
 				$mybook->get_search_data($element);
@@ -74,11 +75,12 @@ class PhonebookController {
 			$element = $_REQUEST['element'];
 			if (ini_get("magic_quotes_gpc"))
 				$element = array_map('stripslashes', $element);
-			if (($element['name'] == "") AND ($element['phone'] == "")) {
+            if (($element['name'] == "") AND ($element['phone'] == "")) {
 				$emptyfields = true; // echo "<hr>Empty fields. Search is impossible.<hr>";
 			} else {
-				$url = dirname($_SERVER['SCRIPT_NAME']); 
-				$url .= '/search/'.$sort.'/'.$direction.'/'.$element['name'].'/'.$element['phone'];
+                $mybook->get_search_data($element);
+                $url = dirname($_SERVER['SCRIPT_NAME']);
+				$url .= '/search';
 				Header("Location: $url");
 				exit();
 			}

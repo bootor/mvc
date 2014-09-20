@@ -112,7 +112,7 @@ class phonebook {
 				while ($stmt->fetch()) {
 					$searchbook[]=['id' => $id, 'name' => $name, 'phone' => $phone];
 				}
-				$stmt->close(); 
+				$stmt->close();
 			}
 		} else {
 			if ($stmt = $this->mysqli->prepare("SELECT * FROM `$this->tblname` WHERE (`name` LIKE CONCAT('%', ?, '%') AND (? != '')) OR (`phone` LIKE CONCAT('%', ?, '%') AND (? != ''))")) {
@@ -122,13 +122,15 @@ class phonebook {
 				while ($stmt->fetch()) {
 					$searchbook[]=['id' => $id, 'name' => $name, 'phone' => $phone];
 				}
-				$stmt->close(); 
+				$stmt->close();
 			}
 		}
-		if ($stmt = $this->mysqli->prepare("TRUNCATE `$this->searchtbl`")) { 
-			$stmt->execute();
-			$stmt->close();
-		}
+        if (count($searchbook) > 0) {
+            if ($stmt = $this->mysqli->prepare("TRUNCATE `$this->searchtbl`")) {
+                $stmt->execute();
+                $stmt->close();
+            }
+        }
 		foreach ($searchbook as $element) {
 			if ($stmt = $this->mysqli->prepare("INSERT INTO `$this->searchtbl` (`name`, `phone`) VALUES (?, ?)")) {
 				$stmt->bind_param("ss", $element['name'], $element['phone']);
